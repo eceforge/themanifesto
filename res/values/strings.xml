@@ -3,7 +3,8 @@
     <string name="app_name">GoogleMapsTest</string>
     <string name="hello_world">Hello world!</string>
     <string name="menu_settings">Settings</string>
-    <string name="title_activity_main">MainActivity</string>
-    <string name="dp">Down Periscope</string>
+    <string name="title_activity_main">Periscope</string>
+    <string name="dp">Down Periscope!</string>
+    <string name="capture">Capture</string>
 
 </resources>
