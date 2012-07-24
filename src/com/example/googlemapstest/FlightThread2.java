@@ -9,10 +9,10 @@ public class FlightThread2 extends Thread
 	{
 		while(lon > -117280000)
 		{
-		lat = lat + 248*5;
-		lon = lon - 2522*5;
+		lat = lat + 248;
+		lon = lon - 2522;
 			try {
-			Thread.sleep(5000);
+			Thread.sleep(2000);
 			} catch (InterruptedException e) {
 			e.printStackTrace();
 			}

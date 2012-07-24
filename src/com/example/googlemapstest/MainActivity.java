@@ -28,8 +28,10 @@ public class MainActivity extends MapActivity {
 	FlightThread plane1;
 	FlightThread2 plane2;
 	PeriscopeThread t2;
+	PeriscopeThread2 t3;
 	int pressed = 1;
-	boolean stopThread = false;
+	boolean stopThread1 = false;
+	boolean stopThread2 = false;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -48,18 +50,19 @@ public class MainActivity extends MapActivity {
 		
 
 		t2 = new PeriscopeThread();
+		t3 = new PeriscopeThread2();
 
 		downPeriscope = (Button) findViewById(R.id.clickBtn);
 		downPeriscope.setClickable(true);
 		downPeriscope.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View view) {
 				{
-					stopThread = false;
+					stopThread1 = false;
 					if (!t2.isAlive()) {
 						t2.start();
 						downPeriscope.setText("Up Periscope!");
 					} else {
-						stopThread = true;
+						stopThread1 = true;
 						t2 = new PeriscopeThread();
 						downPeriscope.setText("Down Periscope!");
 					}
@@ -142,6 +145,25 @@ public class MainActivity extends MapActivity {
 									mapView.removeAllViews();
 								}
 							});
+							
+							Button downPeris = (Button) hitView
+									.findViewById(R.id.periscope);
+							downPeris.setOnClickListener(new Button.OnClickListener() {
+
+								@Override
+								public void onClick(View v) {
+									mapView.removeAllViews();
+									stopThread2 = false;
+									if (!t3.isAlive()) {
+										t3.start();
+										downPeriscope.setText("Up Periscope!");
+									} else {
+										stopThread2 = true;
+										t3 = new PeriscopeThread2();
+										downPeriscope.setText("Down Periscope!");
+									}
+								}
+							});
 						}
 					}
 					else
@@ -165,7 +187,7 @@ public class MainActivity extends MapActivity {
 
 	private class PeriscopeThread extends Thread {
 		public void run() {
-			while (!stopThread) {
+			while (!stopThread1) {
 				GeoPoint point = new GeoPoint(plane1.getLat(), plane1.getLong());
 				mc.animateTo(point);
 				mc.setZoom(19);
@@ -177,10 +199,27 @@ public class MainActivity extends MapActivity {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+			}
+			}
+			
+	}
+	
+	private class PeriscopeThread2 extends Thread {
+		public void run() {
+			while (!stopThread2) {
+				GeoPoint point = new GeoPoint(plane2.getLat(), plane2.getLong());
+				mc.animateTo(point);
+				mc.setZoom(19);
+				Log.d("" + plane2.getLong(), "String");
+
+				try {
+					Thread.sleep(2000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 
 			}
 
 		}
 	}
-
 }
