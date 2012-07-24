@@ -1,0 +1,16 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent" android:layout_height="fill_parent">
+    
+<com.google.android.maps.MapView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/mapview"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:clickable="true"
+    android:apiKey="0ah4uh3VA3GH0KdmxgExdfjOFT2vNO6lOoLwjnw"
+/>
+    <Button android:layout_width="wrap_content"
+        android:layout_height="wrap_content" android:text="@string/dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true" android:id="@+id/clickBtn" />
+</RelativeLayout>
