@@ -17,4 +17,12 @@
         android:layout_height="wrap_content" android:text="@string/capture"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true" android:id="@+id/capture" />
+    <Button android:layout_width="wrap_content"
+        android:layout_height="wrap_content" android:text="@string/ping"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentBottom="true" android:id="@+id/ping" />
+    <Button android:layout_width="wrap_content"
+        android:layout_height="wrap_content" android:text="@string/scan"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true" android:id="@+id/scan" />
 </RelativeLayout>

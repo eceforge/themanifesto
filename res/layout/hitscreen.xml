@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/hitscreen"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" 
+    android:background="@drawable/jetblue">
+ <LinearLayout 
+     android:layout_width="wrap_content"
+     android:layout_height="wrap_content"
+     android:orientation="vertical" 
+     android:layout_margin="70dp"
+     android:layout_alignParentBottom="true">
+    <LinearLayout 
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:orientation="vertical" 
+      android:layout_margin="20dp">
+      <TextView
+          android:layout_width="fill_parent"
+          android:layout_height="wrap_content"
+          android:text="You found flight 277 from JFK to ORD"
+          android:textStyle="bold" />
+      <Button
+          android:id="@+id/periscope"
+          android:layout_width="fill_parent"
+          android:layout_height="wrap_content"
+          android:layout_alignParentLeft="true"
+          android:text="Down Periscope!" />
+      <Button
+          android:id="@+id/travelbook"
+          android:layout_width="fill_parent"
+          android:layout_height="wrap_content"
+          android:text="View TravelBook" />
+      <Button
+          android:id="@+id/back"
+          android:layout_width="fill_parent"
+          android:layout_height="wrap_content"
+          android:layout_alignParentRight="true"
+          android:text="Return" />
+      </LinearLayout>
+ </LinearLayout>
+</LinearLayout>

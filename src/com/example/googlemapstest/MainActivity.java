@@ -1,10 +1,14 @@
 package com.example.googlemapstest;
 
-import android.graphics.Bitmap;
+//import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 
 import com.google.android.maps.GeoPoint;
@@ -16,94 +20,167 @@ public class MainActivity extends MapActivity {
 
 	Button downPeriscope;
 	Button capture;
+	Button ping;
+	Button scan;
 	MapController mc;
 	MapView mapView;
-	
-	FlightThread t;
+
+	FlightThread plane1;
+	FlightThread2 plane2;
 	PeriscopeThread t2;
 	int pressed = 1;
 	boolean stopThread = false;
-	
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        
-        mapView = (MapView) findViewById(R.id.mapview);
-        mapView.setBuiltInZoomControls(true);
-        mapView.setSatellite(true);
-        mc = mapView.getController();
-        
-        t = new FlightThread();
-        t.start();
-        
-        t2 = new PeriscopeThread();
-        
-        downPeriscope = (Button) findViewById(R.id.clickBtn);
-        downPeriscope.setClickable(true);
-        downPeriscope.setOnClickListener(new View.OnClickListener(){
-        	public void onClick(View view){
-        		{
-        		stopThread = false;
-        		if(!t2.isAlive())
-        			{
-        			t2.start();
-        			downPeriscope.setText("Up Periscope!");
-        			}
-        		else
-        			{
-        			stopThread = true;
-        			t2 = new PeriscopeThread();
-        			downPeriscope.setText("Down Periscope!");
-        			}
-        		}
-        	}
-        });
-        
-       capture = (Button) findViewById(R.id.capture);
-       capture.setOnClickListener(new View.OnClickListener(){
-       	public void onClick(View view){
-       		Bitmap captured = mapView.getDrawingCache();
-       		//TODO do something with captured to share to facebook
-       	}
-       });
-       
-        
-    }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.activity_main, menu);
-        return true;
-    }
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+
+		mapView = (MapView) findViewById(R.id.mapview);
+		mapView.setBuiltInZoomControls(true);
+		mapView.setSatellite(true);
+		mc = mapView.getController();
+
+		plane1 = new FlightThread();
+		plane1.start();
+		plane2 = new FlightThread2();
+		plane2.start();
+		
+
+		t2 = new PeriscopeThread();
+
+		downPeriscope = (Button) findViewById(R.id.clickBtn);
+		downPeriscope.setClickable(true);
+		downPeriscope.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View view) {
+				{
+					stopThread = false;
+					if (!t2.isAlive()) {
+						t2.start();
+						downPeriscope.setText("Up Periscope!");
+					} else {
+						stopThread = true;
+						t2 = new PeriscopeThread();
+						downPeriscope.setText("Down Periscope!");
+					}
+				}
+			}
+		});
+
+		capture = (Button) findViewById(R.id.capture);
+		capture.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View view) {
+				// Bitmap captured = mapView.getDrawingCache();
+				LayoutInflater layoutInflater = (LayoutInflater) getBaseContext()
+						.getSystemService(LAYOUT_INFLATER_SERVICE);
+				View popupView = layoutInflater.inflate(R.layout.capture_popup,
+						(ViewGroup) findViewById(R.id.popup_element));
+				LayoutParams layoutParams = new LayoutParams(
+						LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+				mapView.addView(popupView, layoutParams);
+
+				Button btnDismiss = (Button) popupView
+						.findViewById(R.id.dismiss);
+				btnDismiss.setOnClickListener(new Button.OnClickListener() {
+
+					@Override
+					public void onClick(View v) {
+						// TODO Auto-generated method stub
+						mapView.removeAllViews();
+					}
+				});
+
+			}
+			});
+		
+		ping = (Button) findViewById(R.id.ping);
+		ping.setClickable(true);
+		ping.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View view) {
+				{
+					int randLat;
+					int randLon;
+					
+					mc.setZoom(10);
+					GeoPoint point = new GeoPoint(plane2.getLat(), plane2.getLong());
+					mc.animateTo(point);
+					randLat = (plane2.getLat() + (int) (Math.random() * (mapView.getLatitudeSpan())))-(int)(mapView.getLatitudeSpan()/2);
+					randLon = (plane2.getLong() + (int) (Math.random() * (mapView.getLongitudeSpan())))-(int)(mapView.getLongitudeSpan()/2);
+					point = new GeoPoint(randLat, randLon);
+					mc.animateTo(point);
+				}
+			}
+		});
+		
+		scan = (Button) findViewById(R.id.scan);
+		scan.setClickable(true);
+		scan.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View view) {
+					
+					if(plane2.getLat() > (mapView.getMapCenter().getLatitudeE6() - mapView.getLatitudeSpan()/2)
+							&& plane2.getLat() < (mapView.getMapCenter().getLatitudeE6() + mapView.getLatitudeSpan()/2) 
+							&& plane2.getLong() > (mapView.getMapCenter().getLongitudeE6() - mapView.getLongitudeSpan()/2)
+							&& plane2.getLong() < (mapView.getMapCenter().getLongitudeE6() + mapView.getLongitudeSpan()/2))
+					{
+						scan.setBackgroundColor(Color.GREEN);
+						if(mapView.getLongitudeSpan() < 300000)
+						{
+							LayoutInflater layoutInflater = (LayoutInflater) getBaseContext()
+									.getSystemService(LAYOUT_INFLATER_SERVICE);
+							View hitView = layoutInflater.inflate(R.layout.hitscreen,
+									(ViewGroup) findViewById(R.id.hitscreen));
+							LayoutParams layoutParams = new LayoutParams(
+									LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+							mapView.addView(hitView, layoutParams);
+
+							Button btnDismiss = (Button) hitView
+									.findViewById(R.id.back);
+							btnDismiss.setOnClickListener(new Button.OnClickListener() {
+
+								@Override
+								public void onClick(View v) {
+									mapView.removeAllViews();
+								}
+							});
+						}
+					}
+					else
+					{
+						scan.setBackgroundColor(Color.RED);
+					}
+				} 
+		});
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getMenuInflater().inflate(R.menu.activity_main, menu);
+		return true;
+	}
 
 	@Override
 	protected boolean isRouteDisplayed() {
 		return false;
 	}
-	
-	private class PeriscopeThread extends Thread
-	{
-		public void run()
-		{
-			while(!stopThread)
-			{
-    		GeoPoint point = new GeoPoint(t.getLat(), t.getLong());
-    		mc.animateTo(point);
-    		mc.setZoom(19);
-    		Log.d(""+t.getLong(), "String");
 
-    		try {
-				Thread.sleep(2000);
+	private class PeriscopeThread extends Thread {
+		public void run() {
+			while (!stopThread) {
+				GeoPoint point = new GeoPoint(plane1.getLat(), plane1.getLong());
+				mc.animateTo(point);
+				mc.setZoom(19);
+				Log.d("" + plane1.getLong(), "String");
+
+				try {
+					Thread.sleep(2000);
 				} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
-    		
+
 			}
-    		
+
 		}
 	}
-	
-}
 
+}
